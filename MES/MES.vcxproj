@@ -127,10 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GaussMethod.cpp" />
+    <ClCompile Include="Jacobian.cpp" />
     <ClCompile Include="MES.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dane.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GaussMethod.h" />
+    <ClInclude Include="Jacobian.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

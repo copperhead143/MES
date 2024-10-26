@@ -6,6 +6,9 @@
 #include <cmath>
 #include <iomanip>
 
+#include "GaussMethod.h"
+#include "Jacobian.h"
+
 
 using namespace std;
 
@@ -33,99 +36,7 @@ struct GlobalData {
     double npc; //ilosc punktow calkowania
 };
 
-struct gauss {
-    vector<double> points;
-    vector<double> weights;
-    int N;
 
-    gauss(int n) : N(n) {
-        if (n == 1) {
-            points = { 0.0 };
-            weights = { 2.0 };
-        }
-        else if (n == 2) {
-            points = { -1.0 / std::sqrt(3.0), 1.0 / std::sqrt(3.0) };
-            weights = { 1.0, 1.0 };
-        }
-        else if (n == 3) {
-            points = { -std::sqrt(3.0 / 5.0), 0.0, std::sqrt(3.0 / 5.0) };
-            weights = { 5.0 / 9.0, 8.0 / 9.0, 5.0 / 9.0 };
-        }
-        else {
-            throw invalid_argument("za duzo punktow");
-        }
-    }
-};
-
-struct Jakobian {
-    double J[4][4];
-    double J1[4][4];
-    double detJ;
-};
-
-struct UnivElement {
-    vector<vector<double>> dN_dKsi;
-    vector<vector<double>> dN_dEta;
-
-    UnivElement(int npc) {
-        dN_dKsi.resize(npc, vector<double>(4));
-        dN_dEta.resize(npc, vector<double>(4));
-    }
-
-    void calcDeriv() {
-        for (int i = 0; i < dN_dKsi.size(); ++i) {
-            double ksi = dN_dKsi[i][0];
-            double eta = dN_dEta[i][0];
-
-            dN_dKsi[i][0] = -0.25 * (1 - eta);
-            dN_dKsi[i][1] = 0.25 * (1 - eta);
-            dN_dKsi[i][2] = 0.25 * (1 + eta);
-            dN_dKsi[i][3] = -0.25 * (1 + eta);
-
-            dN_dEta[i][0] = -0.25 * (1 - ksi);
-            dN_dEta[i][1] = -0.25 * (1 + ksi);
-            dN_dEta[i][2] = 0.25 * (1 + ksi);
-            dN_dEta[i][3] = 0.25 * (1 - ksi);
-        }
-    }
-};
-
-double kwadratura_1D(gauss gauss, double (*func)(double)) {
-    double result = 0;
-    for (int i = 0; i < gauss.N; i++) {
-        result += gauss.weights[i] * func(gauss.points[i]);
-    }
-    return result;
-}
-
-double kwadratura_2D(gauss gauss, double (*func)(double, double)) {
-    double result = 0;
-    for (int i = 0; i < gauss.N; i++) {
-        for (int j = 0; j < gauss.N; j++){
-            result += gauss.weights[i] * gauss.weights[j] * func(gauss.points[i], gauss.points[j]);
-        }
-    }
-    return result;
-}
-
-double prostokaty_1D(double a, double b, double N, double(*func)(double)) {
-    double h = (b - a) / N; //szerokosc na osi przedzialu
-    double result = 0;
-
-    for (int i = 0; i < N; i++) {
-        double mid = a + (i + 0.5) * h; //srodek kazdego prostokata
-        result += h * func(mid);
-    }
-    return result;
-}
-
-double func1(double x) {
-    return 5 * (x * x) + 3 * x + 6;
-}
-
-double func2(double x, double y) {
-    return 5 * pow(x, 2) * pow(y, 2) + 3 * x * y + 6;
-}
 
 int main() {
     GlobalData data;
@@ -209,7 +120,7 @@ int main() {
             while (getline(file, line) && !line.empty() && line[0] != '*') {
                 stringstream elementStream(line);
                 int id;
-                elementStream >> id;  //odczyt ID
+                elementStream >> id;  //odczyt IDA
 
                 element e;
                 e.ID = id;
