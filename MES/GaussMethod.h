@@ -4,6 +4,8 @@
 #include <vector>
 #include <stdexcept>
 #include <cmath>
+#include "node_data.h"
+#include "GaussMethod.h"
 
 struct gauss {
     std::vector<double> points;  

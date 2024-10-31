@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="GaussMethod.h" />
     <ClInclude Include="Jacobian.h" />
+    <ClInclude Include="node_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

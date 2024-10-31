@@ -1,4 +1,8 @@
 #include "GaussMethod.h"
+#include "node_data.h"
+#include "Jacobian.h"
+
+using namespace std;
 
 gauss::gauss(int n) : N(n) {
     if (n == 1) {
